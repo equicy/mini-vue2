@@ -2,6 +2,7 @@
 import Observer from "../observer"
 import { compileToFunctions } from '../compiler/index'
 import { mountComponent } from './lifecycle'
+import { mergeOptions } from '../utils/options'
 
 const LIFECYCLE_HOOKS = [
   'beforeCreate',
@@ -25,6 +26,12 @@ function proxy(target,property,key){
 
 export function initMixin(Vue) {
   Vue.prototype._init = function(options) {
+
+    const vm = this
+    console.log(vm.constructor.options, options, '000')
+    vm.$options = mergeOptions(vm.constructor.options, options)
+
+
     this.initData(options)
 
     const el = this.options.el

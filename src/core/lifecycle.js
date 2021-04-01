@@ -6,6 +6,7 @@ export function lifeCycleMixin(Vue) {
   Vue.prototype._update = function(vnode) {
     const vm = this
     const prevVnode = vm._vnode
+    vm._vnode = vnode
     console.log(vm, 'vv')
 
     if (!prevVnode) {
@@ -33,12 +34,16 @@ export function mountComponent(vm, el) {
   // 每次数据变化 就执行 updateComponent 方法 进行更新操作
   new Watcher(vm, updateComponent, () => {}, true);
 
+  setTimeout(() => {
+    vm.name = 'mengyan'
+  }, 5000)
+
   callHook(vm, 'mounted');
 
   // vue 响应式数据的规则 数据变了 视图会刷新
 }
 
-export function callHook(vm, hook) { // vm.$options
+export function callHook(vm, hook) {
   let handlers = vm.options[hook]; // 典型的发布订阅模式
   if (handlers) {
       for (let i = 0; i < handlers.length; i++) { // [fn,fn,fn]
