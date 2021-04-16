@@ -29,12 +29,17 @@ class Watch {
   get() {
     pushTarget(this)
     this.getter()
+    this.cb()
     popTarget()
   }
 
   update() {
     this.get()
   }
+}
+
+export function watch() {
+  return new Watch(...arguments)
 }
 
 export default Watch

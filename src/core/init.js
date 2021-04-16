@@ -1,8 +1,8 @@
 
-import Observer from "../observer"
 import { compileToFunctions } from '../compiler/index'
-import { mountComponent } from './lifecycle'
+import { mountComponent, callHook } from './lifecycle'
 import { mergeOptions } from '../utils/options'
+import { initState } from '../core/state'
 
 const LIFECYCLE_HOOKS = [
   'beforeCreate',
@@ -13,43 +13,27 @@ const LIFECYCLE_HOOKS = [
   'updated'
 ]
 
-function proxy(target,property,key){
-  Object.defineProperty(target,key,{
-      get(){
-          return target[property][key];
-      },
-      set(newValue){
-          target[property][key] = newValue
-      }
-  })
-}
-
 export function initMixin(Vue) {
   Vue.prototype._init = function(options) {
 
     const vm = this
-    console.log(vm.constructor.options, options, '000')
-    vm.$options = mergeOptions(vm.constructor.options, options)
+    vm.$options = mergeOptions(vm.constructor.options || {}, options)
 
-
-    this.initData(options)
+    initLifecycle(vm)
+    initEvents(vm)
+    initRender(vm)
+    callHook(vm, 'beforeCreate')
+    initInjections(vm) // resolve injections before data/props
+    initState(vm)
+    initProvide(vm) // resolve provide after data/props
+    callHook(vm, 'created')
 
     const el = this.options.el
-    this.$mount(el)
-  }
-
-  Vue.prototype.initData = function(options) {
-    if (!options.data) return
-    let data = options.data
-
-    data = this._data = typeof data === 'function' ? data.call(vm) : data;
-
-    for(let key in data){
-      proxy(this,'_data',key);
+    if (el) {
+      this.$mount(el)
     }
-    new Observer(data)
   }
-  
+
   Vue.prototype.$mount = function(el) {
     this.$el = document.querySelector(el)
     const options = this.options
@@ -83,3 +67,9 @@ export function initMixin(Vue) {
     }
   }
 }
+
+function initLifecycle() {}
+function initEvents() {}
+function initRender() {}
+function initInjections() {}
+function initProvide() {}

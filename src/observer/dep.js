@@ -40,6 +40,7 @@ export function pushTarget(target) {
 
 export function popTarget() {
   targetStack.pop()
+
   Dep.target = targetStack[targetStack.length - 1]
 }
 

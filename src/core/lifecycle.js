@@ -1,5 +1,5 @@
 
-import Watcher from '../observer/watcher'
+import { watch } from '../observer/watcher'
 import { patch } from '../vdom/patch'
 
 export function lifeCycleMixin(Vue) {
@@ -7,7 +7,6 @@ export function lifeCycleMixin(Vue) {
     const vm = this
     const prevVnode = vm._vnode
     vm._vnode = vnode
-    console.log(vm, 'vv')
 
     if (!prevVnode) {
       vm.$el = patch(vm.$el, vnode)
@@ -28,19 +27,22 @@ export function mountComponent(vm, el) {
       // _render => options.render 方法
       // _update => 将虚拟dom 变成真实dom 来执行
       vm._update(vm._render());
-      console.log(vm)
   }
 
   // 每次数据变化 就执行 updateComponent 方法 进行更新操作
-  new Watcher(vm, updateComponent, () => {}, true);
+  watch(
+    vm, 
+    updateComponent,
+    function () {
+      if (vm._isMounted && !vm._isDestroyed) {
+        callHook(vm, 'updated');
+      }
+    },
+    true
+  );
 
-  setTimeout(() => {
-    vm.name = 'mengyan'
-  }, 5000)
-
+  vm._isMounted = true
   callHook(vm, 'mounted');
-
-  // vue 响应式数据的规则 数据变了 视图会刷新
 }
 
 export function callHook(vm, hook) {

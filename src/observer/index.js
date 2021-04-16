@@ -1,3 +1,4 @@
+import { isObject } from '../utils/options';
 import Dep from './dep'
 const defineReactive = (obj, key) => {
   const dep = new Dep();
@@ -36,6 +37,19 @@ class Observer {
       defineReactive(data, keys[i])
     }
   }
+}
+
+export function observer(data) {
+  if (!isObject(data)) {
+    return
+  }
+
+  // 防止重复监听
+  if (data.__ob__ instanceof Observer) {
+    return
+  }
+
+  return new Observer(data)
 }
 
 export default Observer

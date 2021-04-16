@@ -67,7 +67,6 @@ function updateChildren(parent, oldChildren, newChildren) {
     return map
   }
   let map = makeIndexByKey(oldChildren)
-  console.log(oldChildren, newChildren, 'ov', isSameVnode(oldChildren[0], newChildren[0]))
 
   while(oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
     if (!oldStartVnode) {
