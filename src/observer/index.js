@@ -1,11 +1,11 @@
 import { isObject } from '../utils/options';
 import Dep from './dep'
 const defineReactive = (obj, key) => {
-  const dep = new Dep();
+  const dep = new Dep(); // data对象中的每一个属性对应一个dep实例
   const property = Object.getOwnPropertyDescriptor(obj);
   let val = obj[key]
   if (property && property.configurable === false) return;
-
+  observer(val)
   Object.defineProperty(obj, key, {
     configurable: true,
     enumerable: true,

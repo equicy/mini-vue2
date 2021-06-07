@@ -2,7 +2,7 @@ let uid = 0
 class Dep {
   constructor() {
     this.id = uid++;
-    this.subs = []
+    this.subs = [] // 所有的watcher
   }
 
   depend() {
@@ -12,6 +12,7 @@ class Dep {
   }
 
   // sub: Watcher
+  // 每一个dep内的subs内都添加要添加所有对应的watch
   addSub (sub) {
     this.subs.push(sub)
   }

@@ -30,6 +30,8 @@ export function mountComponent(vm, el) {
   }
 
   // 每次数据变化 就执行 updateComponent 方法 进行更新操作
+  // watch会传一个回调，只是用户创建的watch和框架自身创建的watch
+  // 框架自身创建的watch是执行render更新dom
   watch(
     vm, 
     updateComponent,
